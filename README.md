@@ -80,3 +80,8 @@ On the Sign in method tab, enable the Google sign-in method and click Save.
 *Firebase Rules*
 - Make sure the rules allow users to edit only their data
 - Rules should allow any (linked user) to delete anonymous collection data.
+
+
+# Maven Publishing
+
+Use the task `publishToMavenLocal` to push a local build.

@@ -1,13 +1,18 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
 
+def major = 1
+def minor = 0
+def patch = 1
+def build = 1
+
+group = 'com.sababado.rolo'
+version = "$major.$minor.$patch.$build"
+
 android {
-    def major = 1
-    def minor = 0
-    def patch = 1
-    def build = 0
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -15,7 +20,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode major.toInteger() * 10000000 + minor.toInteger() * 100000 + patch.toInteger() * 1000 + build.toInteger()
-        versionName "$major.$minor.$patch.$build"
+        versionName version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -44,7 +49,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:19.7.0'
     implementation 'com.google.android.ads.consent:consent-library:1.0.8'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
@@ -56,4 +61,32 @@ dependencies {
     // Kotlin
     implementation "androidx.preference:preference-ktx:$preference_version"
     implementation "androidx.preference:preference:$preference_version"
+}
+
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = group
+                artifactId = 'cookbook'
+                version = version
+            }
+            // Creates a Maven publication called “debug”.
+            debug(MavenPublication) {
+                // Applies the component for the debug build variant.
+                from components.debug
+
+                groupId = group
+                artifactId = 'cookbook-debug'
+                version = version
+            }
+        }
+    }
 }
