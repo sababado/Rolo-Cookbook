@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference
  *
  * @param activity The activity that this handler should be tied to. The reference will be weak.
  */
-class LocationPermissionHandler(activity: Activity) : ActivityCompat.OnRequestPermissionsResultCallback {
+class LocationPermissionHandler(activity: Activity) {
     private val weakActivity = WeakReference(activity)
 
     /**
@@ -92,21 +92,6 @@ class LocationPermissionHandler(activity: Activity) : ActivityCompat.OnRequestPe
 //                PermissionManager.requestPermission(it, LOCATION_PERMISSION_REQUEST_CODE, permissionType, true);
             }
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
-
-//        if (PermissionManager.isPermissionGranted(permissions, grantResults, permissionType)) {
-//            // Enable the my location layer if the permission has been granted.
-//            tryEnablingLocation()
-//        } else {
-//            // Permission was denied. Display an error message
-//            // Display the missing permission error dialog when the fragments resume.
-//            permissionDenied = true;
-//        }
     }
 }
 

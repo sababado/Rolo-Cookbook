@@ -1,12 +1,17 @@
 package com.sababado.rolo.cookbook.demo
 
 import android.Manifest
+import android.content.Intent
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
+import com.sababado.rolo.cookbook.permissions.LocationManager
 import com.sababado.rolo.cookbook.permissions.PermissionManager
 import com.sababado.rolo.cookbook.utils.ext.SimpleCallback
 import com.sababado.rolo.cookbook.utils.ext.showSnackbar
@@ -23,11 +28,19 @@ import com.sababado.rolocookbook.R
  */
 class LocationActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
     private lateinit var layout: View
+    private lateinit var latitudeTextView: TextView
+    private lateinit var longitudeTextView: TextView
+    private lateinit var locationManager: LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
         layout = findViewById(R.id.main_layout)
+        latitudeTextView = findViewById(R.id.latitude_value)
+        longitudeTextView = findViewById(R.id.longitude_value)
+        locationManager = LocationManager(this) {
+            useLocation(it)
+        }
 
         // Register a listener for location button.
         findViewById<Button>(R.id.get_location).setOnClickListener { startLocation() }
@@ -50,8 +63,9 @@ class LocationActivity : AppCompatActivity(), ActivityCompat.OnRequestPermission
     // Call back for when the location permission is granted.
     private val permissionGrantedCallback: SimpleCallback<String> = { _ ->
         // Permission has been granted.
+        Log.d("LocationActivity", "Permission Granted")
         layout.showSnackbar("Permission Granted", Snackbar.LENGTH_SHORT)
-        getCurrentLocation()
+        locationManager.getLastLocation()
     }
 
     // Start the location work, first by checking for permission.
@@ -63,8 +77,16 @@ class LocationActivity : AppCompatActivity(), ActivityCompat.OnRequestPermission
         onPermissionGranted = permissionGrantedCallback
     )
 
-    // Called when location permission is available and we can do some work!
-    private fun getCurrentLocation() {
+    private fun useLocation(location: Location?) {
+        location?.let {
+            latitudeTextView.text = location.latitude.toString()
+            longitudeTextView.text = location.longitude.toString()
+        }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i("LocationActivity", "In onActivityResult")
+        super.onActivityResult(requestCode, resultCode, data)
+        locationManager.onActivityResult(requestCode)
     }
 }
