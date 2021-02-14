@@ -13,6 +13,7 @@ class FirstTimeUsageHandler(context: Context, name: String = "first_time") {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(name, MODE_PRIVATE)
 
     /**
+     *
      * Set the value for the permission.
      * @param permission Permission to use
      * @param isFirstTime True if this should register as the first time at next get, false if not.
