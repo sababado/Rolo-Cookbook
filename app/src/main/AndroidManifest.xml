@@ -17,11 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoloCookbook">
         <activity
-            android:name=".demo.LocationActivity"
+            android:name="com.sababado.rolo.cookbook.demo.LocationActivity"
             android:label="@string/title_activity_location" />
 
 
-        <activity android:name=".demo.MainActivity">
+        <activity android:name="com.sababado.rolo.cookbook.demo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

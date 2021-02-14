@@ -1,180 +1,125 @@
 package com.sababado.rolo.cookbook.permissions
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
 import com.sababado.rolo.cookbook.R
-import com.sababado.rolo.cookbook.utils.ext.BasicCallback
-import com.sababado.rolo.cookbook.utils.ext.showSnackbar
+import com.sababado.rolo.cookbook.permissions.PermissionManager.handlePermissionResult
+import com.sababado.rolo.cookbook.permissions.PermissionManager.isPermissionAvailable
+import com.sababado.rolo.cookbook.permissions.PermissionManager.requestPermission
+import com.sababado.rolo.cookbook.utils.ext.*
 
 
-private const val REQ_CODE = 1122993
+private const val REQ_CODE = 333
 
-fun providePermissionManager(context: Context) = PermissionManager(FirstTimeUsageHandler(context))
+/**
+ * 1. The using activity should implement [ActivityCompat.OnRequestPermissionsResultCallback] and override [onRequestPermissionsResult][ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult].
+ * 2. Start the request with one of the [requestPermission] functions. One simplifies the process with a snackbar, the other is flexible for more detailed usage.
+ * 3. Handle the results in [handlePermissionResult].
+ *
+ * If permissions are denied, the only callback will be in the [handlePermissionResult] function.
+ *
+ * Check for one off permissions with [isPermissionAvailable].
+ */
+object PermissionManager {
 
-class PermissionManager(private val firstTimeUsageHandler: FirstTimeUsageHandler) {
+    /**
+     * Requests the permission with a convenience [Snackbar].
+     * If an additional rationale should be displayed, the user has to launch the request from
+     * a SnackBar that includes additional information.
+     * @param permission The permission to request.
+     * @param snackbarHost The layout that the snackbar should attach to.
+     * @param rational The message that should be shown to explain the permission.
+     */
+    @JvmStatic
+    fun requestPermission(
+        appCompatActivity: AppCompatActivity,
+        permission: String,
+        snackbarHost: View,
+        @StringRes rational: Int,
+        onPermissionGranted: SimpleCallback<String>,
+    ) {
+        // Permission has not been granted and must be requested.
+        requestPermission(appCompatActivity, permission, onPermissionGranted) { cont ->
+            snackbarHost.showSnackbar(rational, Snackbar.LENGTH_INDEFINITE, R.string.ok) {
+                cont()
+            }
+        }
+    }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<String>,
-//        grantResults: IntArray
-//    ) {
-//        if (requestCode == PERMISSION_REQUEST_CAMERA) {
-//            // Request for camera permission.
-//            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permission has been granted. Start camera preview Activity.
-//                layout.showSnackbar(R.string.camera_permission_granted, Snackbar.LENGTH_SHORT)
-//                startCamera()
-//            } else {
-//                // Permission request was denied.
-//                layout.showSnackbar(R.string.camera_permission_denied, Snackbar.LENGTH_SHORT)
-//            }
-//        }
-//    }
-//
-//    /**
-//     * @param snackbarHost Any snackbars will be attached to this view.
-//     */
-//    fun requestPermission(
-//        activity: Activity,
-//        permission: String,
-//        @StringRes explanationText: Int,
-//        snackbarHost: View,
-//        onPermissionGranted: BasicCallback
-//    ) {
-//        requestPermission(
-//            activity = activity,
-//            permission = permission,
-//            listener = object : PermissionAskListener {
-//                override fun onNeedPermission() {
-//
-//                }
-//
-//                override fun onPermissionPreviouslyDenied() {
-//                    // Provide an additional rationale to the user if the permission was not granted
-//                    // and the user would benefit from additional context for the use of the permission.
-//                    // Display a SnackBar with a button to request the missing permission.
-//                    snackbarHost.showSnackbar(
-//                        explanationText,
-//                        Snackbar.LENGTH_INDEFINITE, R.string.ok
-//                    ) {
-//                        ActivityCompat.requestPermissions(activity, arrayOf(permission), REQ_CODE)
-//                    }
-//                }
-//
-//                override fun onPermissionPreviouslyDeniedWithNeverAskAgain() {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onPermissionGranted() {
-//                    onPermissionGranted()
-//                }
-//            }
-//        )
-//    }
-//
-//    fun requestPermission(
-//        activity: Activity,
-//        permission: String,
-//        listener: PermissionAskListener
-//    ) {
-//        // Check if the Camera permission has been granted
-//        if (ActivityCompat.checkSelfPermission(activity, permission)
-//            == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // Permission is already available, start camera preview
-//            listener.onPermissionGranted()
-//        } else {
-//            // Permission is missing and must be requested.
-//            requestPermission(permission)
-//        }
-//    }
-//
-//    /**
-//     * Requests the permission.
-//     * If an additional rationale should be displayed, the user has to launch the request from
-//     * a SnackBar that includes additional information.
-//     */
-//    private fun requestPermission(activity: Activity, permission: String) {
-//        // Permission has not been granted and must be requested.
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-//            // Provide an additional rationale to the user if the permission was not granted
-//            // and the user would benefit from additional context for the use of the permission.
-//            // Display a SnackBar with a button to request the missing permission.
-//            layout.showSnackbar(
-//                R.string.camera_access_required,
-//                Snackbar.LENGTH_INDEFINITE, R.string.ok
-//            ) {
-//                ActivityCompat.requestPermissions(activity, arrayOf(permission), REQ_CODE)
-//            }
-//
-//        } else {
-//            layout.showSnackbar(R.string.camera_permission_not_available, Snackbar.LENGTH_SHORT)
-//
-//            // Request the permission. The result will be received in onRequestPermissionResult().
-//            requestPermissionsCompat(arrayOf(Manifest.permission.CAMERA), REQ_CODE)
-//        }
-//    }
-//
-//    private fun shouldAskPermission(context: Context, permission: String): Boolean {
-//        val permissionResult = ActivityCompat.checkSelfPermission(context, permission)
-//        if (permissionResult != PackageManager.PERMISSION_GRANTED) {
-//            return true
-//        }
-//        return false
-//    }
-//
-//    /**
-//     * Check if the user has permission
-//     *
-//     * @param activity Current activity
-//     * @param permission Permission to check. Look at [Manifest.permission] for good options.
-//     * @param listener Permission listener.
-//     */
-//    fun checkPermission(activity: Activity, permission: String, listener: PermissionAskListener) {
-//        if (shouldAskPermission(activity, permission)) {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-//                listener.onPermissionPreviouslyDenied()
-//            } else {
-//                if (firstTimeUsageHandler[permission]) {
-//                    listener.onNeedPermission()
-//                    firstTimeUsageHandler[permission] = false
-//                } else {
-//                    listener.onPermissionPreviouslyDeniedWithNeverAskAgain()
-//                }
-//            }
-//        } else {
-//            listener.onPermissionGranted()
-//        }
-//    }
-//
-//    /**
-//     * Listener for checking permissions.
-//     */
-//    interface PermissionAskListener {
-//        /**
-//         * Called when permission is needed. First time here.
-//         */
-//        fun onNeedPermission()
-//
-//        /**
-//         * Called when there's still a chance to get permission. Show some extra rationale.
-//         */
-//        fun onPermissionPreviouslyDenied()
-//
-//        /**
-//         * Drop it. Stop asking. Don't ask again.
-//         */
-//        fun onPermissionPreviouslyDeniedWithNeverAskAgain()
-//
-//        /**
-//         * Woohoo! Fun stuff can begin.
-//         */
-//        fun onPermissionGranted()
-//    }
+    /**
+     * Requests the permission.
+     * If an additional rationale should be displayed, [onShowRational] will be invoked which has a [BasicCallback]
+     * parameter. `onShowRational` should show some message to the user requiring manual input to continue or not.
+     * If the user decides to continue, invoke the `BasicCallback` parameter.
+     * @param permission The permission to request.
+     * @param onShowRational The rational callback. If continuance is required, invoke the callback.
+     */
+    @JvmStatic
+    fun requestPermission(
+        appCompatActivity: AppCompatActivity,
+        permission: String,
+        onPermissionGranted: SimpleCallback<String>,
+        onShowRational: SimpleCallback<BasicCallback>,
+    ) {
+        if (appCompatActivity.checkSelfPermissionCompat(permission) == PackageManager.PERMISSION_GRANTED) {
+            // Easy. Already done.
+            onPermissionGranted(permission)
+        } else {
+            // Permission has not been granted and must be requested.
+            if (appCompatActivity.shouldShowRequestPermissionRationaleCompat(permission)) {
+                // Provide an additional rationale to the user if the permission was not granted
+                // and the user would benefit from additional context for the use of the permission.
+                // Display a SnackBar with a button to request the missing permission.
+                onShowRational {
+                    appCompatActivity.requestPermissionsCompat(arrayOf(permission), REQ_CODE)
+                }
+            } else {
+                // Request the permission. The result will be received in onRequestPermissionResult().
+                appCompatActivity.requestPermissionsCompat(arrayOf(permission), REQ_CODE)
+            }
+        }
+    }
+
+    /**
+     * See if the permission is already available or not.
+     * @param appCompatActivity Activity to use
+     * @param permission The permission to check.
+     * @return True if the permission is available, false if not.
+     */
+    @JvmStatic
+    fun isPermissionAvailable(appCompatActivity: AppCompatActivity, permission: String): Boolean {
+        return appCompatActivity.checkSelfPermissionCompat(permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    /**
+     * When [onRequestPermissionsResult][ActivityCompat.OnRequestPermissionsResultCallback.onRequestPermissionsResult] is called,
+     * send it all to this function to handle the results. This supports multiple permission requests and
+     * [onPermissionGranted] will be called for each one of them. [onPermissionDenied] will be called only if passed in.
+     * @param requestCode Request code used
+     * @param permissions Permissions requested
+     * @param grantResults Permission results
+     * @param onPermissionDenied Optional. Called for every permission denied.
+     * @param onPermissionGranted Called for every permission granted.
+     */
+    fun handlePermissionResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+        onPermissionDenied: SimpleCallback<String>? = null,
+        onPermissionGranted: SimpleCallback<String>
+    ) {
+        if (requestCode == REQ_CODE) {
+            permissions.forEachIndexed { i, permission ->
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    onPermissionGranted(permission)
+                } else {
+                    onPermissionDenied?.let { it(permission) }
+                }
+            }
+        }
+    }
 }

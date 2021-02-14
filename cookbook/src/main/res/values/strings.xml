@@ -5,6 +5,8 @@
 
     <string name="send_email">Send Email</string>
 
+    <string name="location_rational">Awww cmon just gimme the permissions!</string>
+
     <string name="ok">OK</string>
     <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>

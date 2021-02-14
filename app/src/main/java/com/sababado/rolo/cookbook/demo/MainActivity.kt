@@ -1,4 +1,4 @@
-package com.sababado.rolocookbook.demo
+package com.sababado.rolo.cookbook.demo
 
 import android.os.Bundle
 import android.view.View
