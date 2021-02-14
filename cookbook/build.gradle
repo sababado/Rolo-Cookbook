@@ -5,9 +5,9 @@ plugins {
 }
 
 def major = 1
-def minor = 0
-def patch = 1
-def build = 3
+def minor = 1
+def patch = 0
+def build = 0
 
 group = 'com.sababado.rolo'
 version = "$major.$minor.$patch.$build"
