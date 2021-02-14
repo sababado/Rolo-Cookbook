@@ -4,4 +4,6 @@
     <string name="app_version">App Version</string>
 
     <string name="send_email">Send Email</string>
+
+    <string name="cookbook_admob_ad_unit_id" translatable="false">ca-app-pub-XXXXXXXXXX/ZZZZZZZZZZ</string>
 </resources>

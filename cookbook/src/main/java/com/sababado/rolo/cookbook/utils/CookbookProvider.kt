@@ -6,7 +6,7 @@ import com.sababado.rolo.cookbook.auth.UserAccounts
 /**
  * Get your instances here!
  */
-class CookbookProvider {
+object CookbookProvider {
     /**
      * Returns a new instance of [FirebaseUserAccounts].
      * @return Class conforms to [UserAccounts].

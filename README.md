@@ -31,13 +31,13 @@ Add meta tags in manafest.
     android:value="https://math-for-meat-heads.flycricket.io/privacy.html" />
 <meta-data
     android:name="rolo.cookbook.debug_device_id"
-    android:value="519A899F0D84DE834B8B598F8FBDB58F" />
+    android:value="519A899F0D74FE834B8C598F8FBDB59F" />
 ```
 
-Add the `ad unit id` to the strings
+Add the `ad unit id` to the strings. **The string name must be exactly this.**
 
 ```xml
-<string name="cookbook_admob_ad_unit_id" translatable="false>ca-app-pub-XXXXXXXXXX/ZZZZZZZZZZ</string>
+<string name="cookbook_admob_ad_unit_id" translatable="false">ca-app-pub-XXXXXXXXXX/ZZZZZZZZZZ</string>
 ```
 
 ## Authentication
