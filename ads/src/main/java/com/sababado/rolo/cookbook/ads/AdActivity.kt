@@ -6,7 +6,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdView
-import com.sababado.rolo.cookbook.R
 import com.sababado.rolo.cookbook.utils.MetaDataUtils
 
 

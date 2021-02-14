@@ -5,5 +5,8 @@
 
     <string name="send_email">Send Email</string>
 
-    <string name="cookbook_admob_ad_unit_id" translatable="false">ca-app-pub-XXXXXXXXXX/ZZZZZZZZZZ</string>
+    <string name="ok">OK</string>
+    <string name="okay">Okay</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_thanks">No thanks</string>
 </resources>

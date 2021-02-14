@@ -1,3 +1,4 @@
+include ':ads'
 include ':cookbook'
 include ':app'
 rootProject.name = "Rolo Cookbook"
