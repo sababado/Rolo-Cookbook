@@ -7,7 +7,7 @@ plugins {
 def major = 1
 def minor = 0
 def patch = 1
-def build = 1
+def build = 2
 
 group = 'com.sababado.rolo'
 version = "$major.$minor.$patch.$build"
@@ -78,15 +78,15 @@ afterEvaluate {
                 artifactId = 'cookbook'
                 version = version
             }
-            // Creates a Maven publication called “debug”.
-            debug(MavenPublication) {
-                // Applies the component for the debug build variant.
-                from components.debug
-
-                groupId = group
-                artifactId = 'cookbook-debug'
-                version = version
-            }
+//            // Creates a Maven publication called “debug”.
+//            debug(MavenPublication) {
+//                // Applies the component for the debug build variant.
+//                from components.debug
+//
+//                groupId = group
+//                artifactId = 'cookbook-debug'
+//                version = version
+//            }
         }
     }
 }
