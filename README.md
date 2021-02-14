@@ -1,5 +1,7 @@
 # Cookbook
 
+[![](https://jitpack.io/v/sababado/Rolo-Cookbook.svg)](https://jitpack.io/#sababado/Rolo-Cookbook)
+
 ## About Activity
 Add the activity to your manifest
 ```xml
