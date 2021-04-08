@@ -82,6 +82,47 @@ On the Sign in method tab, enable the Google sign-in method and click Save.
 - Rules should allow any (linked user) to delete anonymous collection data.
 
 
+## Permission Handling
+
+### `PermissionManager`
+
+Helper for permissions.
+
+The using activity should implement `ActivityCompat.OnRequestPermissionsResultCallback` and override `onRequestPermissionsResult`.
+Start the request with one of the `requestPermission` functions. One simplifies the process with a snackbar, the other is flexible for more detailed usage.
+Handle the results in `handlePermissionResult`.
+
+If permissions are denied, the only callback will be in the `handlePermissionResult` function.
+Check for one off permissions with `isPermissionAvailable`.
+
+### `FirstTimeUsageHandler`
+Use this class to ease the actions of checking for the first time usage of something.
+
+
+## Location
+
+Add location with the `LocationManager`.
+Create an instance of this class then start with `getLastLocation`.
+In the using activity, override `onActivityResult]Activity.onActivityResult` and call into `LocationManager.onActivityResult`.
+
+To use this, you'll need to include the Google Play Services dependency in your app.
+```gradle
+implementation 'com.google.android.gms:play-services-location:17.1.0'
+```
+
+You'll need to have permission from the user to use location. A good implementation strategy is to check that first:
+
+```kotlin
+// Start the location work, first by checking for permission.
+private fun startLocation() = PermissionManager.requestPermission(
+    appCompatActivity = this,
+    permission = Manifest.permission.ACCESS_COARSE_LOCATION,
+    snackbarHost = getSnackbarHostView(),
+    rational = R.string.location_rational,
+    onPermissionGranted = permissionGrantedCallback
+)
+```
+
 # Maven Publishing
 
 Use the task `publishToMavenLocal` to push a local build.
