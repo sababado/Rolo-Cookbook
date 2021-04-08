@@ -2,6 +2,11 @@
 
 [![](https://jitpack.io/v/sababado/Rolo-Cookbook.svg)](https://jitpack.io/#sababado/Rolo-Cookbook)
 
+Unless otherwise specified, include the cookbook library:
+```gradle
+implementation 'com.sababado.rolo:cookbook:1.1.0.0'
+```
+
 ## About Activity
 Add the activity to your manifest
 ```xml
@@ -17,6 +22,11 @@ AboutActivity.goToAboutActivity(context)
 ```
 
 ## Ads
+Include the ads library:
+```gradle
+implementation 'com.github.sababado.Rolo-Cookbook:cookbook-ads:1.1.0.0
+```
+
 Add meta tags in manafest.
 
 ```xml
